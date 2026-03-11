@@ -1,33 +1,33 @@
-name: CI Backend
+name: Tests
 
 on:
   push:
-    branches:
-      - master
   pull_request:
-
-concurrency:
-  # Concurrency is only limited on pull requests. head_ref is only defined on PR triggers so otherwise it will use the random run id and always build all pushes.
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
+  workflow_dispatch:
 
 jobs:
-  phpunit-tests:
+  Test:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
-        php-version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]
+        php-version:
+          - 8.5
+          - 8.4
+          - 8.3
+          - 8.2
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
+
       - name: Installing PHP ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-      - name: Composer Install
-        run: composer install -o
-      - name: PHPUnit
-        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml.dist
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run tests
+        run: vendor/bin/phpunit -c tests

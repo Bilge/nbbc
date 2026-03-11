@@ -132,7 +132,7 @@ class BBCodeLexer {
             // Tags may not contain newlines.
             ."{$b}"
             ."(?! -- | ' | !-- | {$b}{$b} )"
-            ."(?: [^\\n\\r{$b}{$e}] | \\\" [^\\\"\\n\\r]* \\\" | \\' [^\\'\\n\\r]* \\' )*"
+            ."(?: [^\\n\\r{$b}{$e}] | \\\" [^\\\"\\n\\r]* \\\" | \\' [^\\'\\n\\r]* \\' )*+"
             ."{$e}"
 
             // Match wiki-links, which are of the form [[...]] or [[...|...]].  Unlike
@@ -513,8 +513,12 @@ class BBCodeLexer {
         // Strip off the [brackets] around the tag, leaving just its content.
         $tag = substr($tag, 1, strlen($tag) - 2);
 
+        if (!strlen($tag)) {
+            return $result;
+        }
+
         // The starting bracket *must* be followed by a non-whitespace character.
-        $ch = ord(substr($tag, 0, 1));
+        $ch = ord($tag[0]);
         if ($ch >= 0 && $ch <= 32) {
             return $result;
         }
