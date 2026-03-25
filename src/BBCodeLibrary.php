@@ -238,18 +238,6 @@ class BBCodeLibrary {
             'plain_content' => ['_content', '_default'],
             'plain_link' => ['_default', '_content'],
         ],
-        'wiki' => [
-            'mode' => BBCode::BBCODE_MODE_LIBRARY,
-            'method' => "doWiki",
-            'class' => 'link',
-            'allow_in' => ['listitem', 'block', 'columns', 'inline'],
-            'end_tag' => BBCode::BBCODE_PROHIBIT,
-            'content' => BBCode::BBCODE_PROHIBIT,
-            'plain_start' => "<b>[",
-            'plain_end' => "]</b>",
-            'plain_content' => ['title', '_default'],
-            'plain_link' => ['_default', '_content'],
-        ],
         'img' => [
             'mode' => BBCode::BBCODE_MODE_LIBRARY,
             'method' => "doImage",
@@ -596,36 +584,6 @@ class BBCodeLibrary {
         }
         return "<span style=\"font-family:$result\">$content</span>";
     }
-
-
-    /**
-     * Format a [wiki] tag by producing an <a>...</a> element.
-     *
-     * @param BBCode $bbcode The {@link BBCode} object doing the parsing.
-     * @param int $action The current action being performed on the tag.
-     * @param string $name The name of the tag.
-     * @param string $default The default value passed to the tag in the form: `[tag=default]`.
-     * @param array $params All of the parameters passed to the tag.
-     * @param string $content The content of the tag. Only available when {@link $action} is **BBCODE_OUTPUT**.
-     * @return bool|string Returns a link to the wiki or boolean result if {@link $action} is **BBCode::BBCODE_CHECK**.
-     */
-    public function doWiki(BBCode $bbcode, $action, $name, $default, $params, $content) {
-        $name = $bbcode->wikify($default);
-
-        if ($action == BBCode::BBCODE_CHECK) {
-            return strlen($name) > 0;
-        }
-
-        if (isset($params['title']) && strlen(trim($params['title']))) {
-            $title = trim($params['title']);
-        } else {
-            $title = trim($default);
-        }
-
-        $wikiURL = $bbcode->getWikiURL();
-        return $bbcode->fillTemplate($bbcode->getWikiURLTemplate(), array("wikiURL" => $wikiURL, "name" => $name, "title" => $title));
-    }
-
 
     /**
      * Format an [img] tag.  The URL only allows http, https, and ftp protocols for safety.

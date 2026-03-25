@@ -85,7 +85,6 @@ class BBCodeLexer {
     public $pat_main;        // Main tag-matching pattern.
     public $pat_comment;    // Pattern for matching comments.
     public $pat_comment2;    // Pattern for matching comments.
-    public $pat_wiki;        // Pattern for matching wiki-links.
 
     /**
      * Instantiate a new instance of the {@link BBCodeLexer} class.
@@ -131,14 +130,9 @@ class BBCodeLexer {
             // Tags may contain "quoted" or 'quoted' sections that may contain [ or ] characters.
             // Tags may not contain newlines.
             ."{$b}"
-            ."(?! -- | ' | !-- | {$b}{$b} )"
+            ."(?! -- | ' | !-- )"
             ."(?: [^\\n\\r{$b}{$e}] | \\\" [^\\\"\\n\\r]* \\\" | \\' [^\\'\\n\\r]* \\' )*+"
             ."{$e}"
-
-            // Match wiki-links, which are of the form [[...]] or [[...|...]].  Unlike
-            // tags, wiki-links treat " and ' marks as normal input characters; but they
-            // still may not contain newlines.
-            ."| {$b}{$b} (?: [^{$e}\\r\\n] | {$e}[^{$e}\\r\\n] ){1,256} {$e}{$e}"
 
             // Match single-line comments, which start with [-- or [' or [rem .
             ."| {$b} (?: -- | ' ) (?: [^{$e}\\n\\r]* ) {$e}"
@@ -173,7 +167,6 @@ class BBCodeLexer {
         // Patterns for matching specific types of tokens during lexing.
         $this->pat_comment = "/^ {$b} (?: -- | ' ) /Dx";
         $this->pat_comment2 = "/^ {$b}!-- (?: [^-] | -[^-] | --[^{$e}] )* --{$e} $/Dx";
-        $this->pat_wiki = "/^ {$b}{$b} ([^\\|]*) (?:\\|(.*))? {$e}{$e} $/Dx";
 
         // Current lexing state.
         $this->ptr = 0;
@@ -358,16 +351,6 @@ class BBCodeLexer {
                             // This is a comment, not a tag, so treat it like it doesn't exist.
                             $this->state = self::BBCODE_LEXSTATE_TEXT;
                             break;
-                        }
-
-                        // See if this is a [[wiki link]]; if so, convert it into a [wiki="" title=""] tag.
-                        if (preg_match($this->pat_wiki, $this->text, $matches)) {
-                            $matches += [1 => null, 2 => null];
-
-                            $this->tag = ['_name' => 'wiki', '_endtag' => false,
-                                '_default' => $matches[1], 'title' => $matches[2]];
-                            $this->state = self::BBCODE_LEXSTATE_TEXT;
-                            return $this->token = BBCode::BBCODE_TAG;
                         }
 
                         // Not a comment, so parse it like a tag.

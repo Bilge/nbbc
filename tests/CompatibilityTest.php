@@ -45,7 +45,6 @@ class CompatibilityTest extends TestCase {
 
 EOT
 ],
-            'wiki' => ['What [[the]] heck?', 'What <a href="/?page=the" class="bbcode_wiki">the</a> heck?'],
             'email' => ['Email todd@noreply.com', 'Email <a href="mailto:todd@noreply.com">todd@noreply.com</a>'],
         ];
 

@@ -130,16 +130,6 @@ class ConformanceTest extends TestCase {
                 'escape_content' => false,
             ]],
             [[
-                'descr' => "Single quotes in tags are NOT considered special characters.",
-                'bbcode' => "[wiki='foo' title='bar']",
-                'html' => "<a href=\"/?page=foo\" class=\"bbcode_wiki\">bar</a>",
-            ]],
-            [[
-                'descr' => "Double quotes in tags are NOT considered special characters.",
-                'bbcode' => "[wiki=\"foo\" title=\"bar\"]",
-                'html' => "<a href=\"/?page=foo\" class=\"bbcode_wiki\">bar</a>",
-            ]],
-            [[
                 'descr' => ":-) produces a smiley <img> element.",
                 'bbcode' => "This is a test of the emergency broadcasting system :-)",
                 'regex' => <<<'REGEX'
@@ -734,41 +724,6 @@ BBCODE
                         'html' => "Watch this cute doggy!!! <object width=\"320\" height=\"240\"><param name=\"movie\" value=\"http://www.youtube.com/v/dQw4w9WgXcQ&hl=en_US&fs=1&\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/dQw4w9WgXcQ&hl=en_US&fs=1&\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"320\" height=\"240\"></embed></object>",
                     ]],
             */
-            [[
-                'descr' => "The [[wiki]] special tag produces a wiki link.",
-                'bbcode' => "This is a test of the [[wiki]] tag.",
-                'html' => "This is a test of the <a href=\"/?page=wiki\" class=\"bbcode_wiki\">wiki</a> tag.",
-            ]],
-            [[
-                'descr' => "The [[wiki]] special tag does not convert [a-zA-Z0-9'\".:_-].",
-                'bbcode' => "This is a test of the [[\"Ab1cd'Ef2gh_Ij3kl.,Mn4op:Qr9st-Uv0wx\"]] tag.",
-                'html' => "This is a test of the <a href=\"/?page=%22Ab1cd%27Ef2gh_Ij3kl.%2CMn4op%3AQr9st_Uv0wx%22\" class=\"bbcode_wiki\">&quot;Ab1cd&#039;Ef2gh_Ij3kl.,Mn4op:Qr9st-Uv0wx&quot;</a> tag.",
-            ]],
-            [[
-                'descr' => "The [[wiki]] special tag can contain spaces.",
-                'bbcode' => "This is a test of the [[northwestern salmon]].",
-                'html' => "This is a test of the <a href=\"/?page=northwestern_salmon\" class=\"bbcode_wiki\">northwestern salmon</a>.",
-            ]],
-            [[
-                'descr' => "The [[wiki]] special tag cannot contain newlines.",
-                'bbcode' => "This is a test of the [[northwestern\nsalmon]].",
-                'html' => "This is a test of the [[northwestern<br>\nsalmon]].",
-            ]],
-            [[
-                'descr' => "The [[wiki]] special tag can contain a title after a | character.",
-                'bbcode' => "This is a test of the [[northwestern salmon|Northwestern salmon are yummy!]].",
-                'html' => "This is a test of the <a href=\"/?page=northwestern_salmon\" class=\"bbcode_wiki\">Northwestern salmon are yummy!</a>.",
-            ]],
-            [[
-                'descr' => "The [[wiki]] special tag doesn't damage anything outside it.",
-                'bbcode' => "I really loved reading [[arc 1|the first story arc]] because it was more entertaining than [[arc 2|the second story arc]] was.",
-                'html' => "I really loved reading <a href=\"/?page=arc_1\" class=\"bbcode_wiki\">the first story arc</a> because it was more entertaining than <a href=\"/?page=arc_2\" class=\"bbcode_wiki\">the second story arc</a> was.",
-            ]],
-            [[
-                'descr' => "The [[wiki]] special tag condenses and trims internal whitespace.",
-                'bbcode' => "This is a test of the [[  northwestern \t salmon   |   Northwestern   salmon are   yummy!  ]].",
-                'html' => "This is a test of the <a href=\"/?page=northwestern_salmon\" class=\"bbcode_wiki\">Northwestern   salmon are   yummy!</a>.",
-            ]],
         ];
         return $result;
     }

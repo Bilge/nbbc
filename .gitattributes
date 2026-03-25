@@ -1,0 +1,6 @@
+/.*            export-ignore
+/doc           export-ignore
+/examples      export-ignore
+/tests         export-ignore
+/CHANGELOG     export-ignore
+/README.*      export-ignore
